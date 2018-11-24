@@ -1,0 +1,18 @@
+{
+	"collection_name": "End To End Tests ",
+	"collection_uid": "127862-711a2044-c4fc-441b-b169-233c07489031",
+	"user_name": "Quentin Castel",
+	"user_id": "127862",
+	"monitor_name": "End-to-End test Master",
+	"monitor_uid": "1e8eea47-e976-4b60-a122-11a5ba65085a",
+	"environment_name": "OpenBanking Engineering K8s",
+	"environment_uid": "127862-51eb6452-10d2-45d3-82ae-fc4c67b59b7c",
+	"metrics": {
+		"errors": 0,
+		"failedTests": 0,
+		"passedTests": 248,
+		"requestCount": 117,
+		"totalLatency": 28348,
+		"warnings": 0
+	}
+}

@@ -1,0 +1,229 @@
+{
+	"id": "717fa428-8290-4f76-878a-37c81ba699c2",
+	"name": "End To End Tests ",
+	"allTests": [],
+	"timestamp": "2018-11-23T14:41:26.793Z",
+	"collection_id": "711a2044-c4fc-441b-b169-233c07489031",
+	"folder_id": 0,
+	"target_type": "collection",
+	"environment_id": "51eb6452-10d2-45d3-82ae-fc4c67b59b7c",
+	"data": [],
+	"delay": 0,
+	"count": 1,
+	"collection": {
+		"id": "711a2044-c4fc-441b-b169-233c07489031",
+		"name": "End To End Tests ",
+		"description": "",
+		"auth": null,
+		"events": [
+			{
+				"listen": "prerequest",
+				"script": {
+					"id": "0de7e95b-63f5-44f7-9af6-9b9ce352ad8e",
+					"type": "text/javascript",
+					"exec": [
+						""
+					]
+				}
+			},
+			{
+				"listen": "test",
+				"script": {
+					"id": "8c3ad712-22fa-4e63-8c35-58a76eaacf73",
+					"type": "text/javascript",
+					"exec": [
+						""
+					]
+				}
+			}
+		],
+		"variables": [],
+		"order": [],
+		"folders_order": [
+			"f5523462-27af-47e9-b97e-2e74d9615516",
+			"4d7890c5-4b48-4bea-8119-a878eca247ce",
+			"0a0622c8-5979-42bc-baca-4d01da56a044",
+			"fe2fac1c-61a2-4fc9-b929-903c5e2aacd6",
+			"b18983e2-87ac-4dcb-8868-fc38baf006dd",
+			"6f23e949-0a2b-4327-8a50-506a7e18f7a0"
+		],
+		"owner": "127862",
+		"permissions": {
+			"team": {
+				"id": "111655",
+				"access": "write"
+			},
+			"users": []
+		},
+		"favorite": true,
+		"shared": true,
+		"type": "collection",
+		"depth": 0
+	},
+	"folder": null,
+	"environment": null,
+	"globals": [],
+	"results": [
+		{
+			"name": "RS discovery",
+			"id": "020511b0-cd1e-4de4-a61d-741e958839b1",
+			"url": "https://rs.aspsp.k8s-ob.forgerock.financial/open-banking/discovery",
+			"totalTime": 0,
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"tests": {
+				"name": "response must be valid and have a json body",
+				"status": "pass",
+				"To have payments and accounts apis": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a json body": {
+					"pass": 1,
+					"fail": 0
+				},
+				"To have payments and accounts apis": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				"264"
+			],
+			"allTests": [
+				{
+					"response must be valid and have a json body": true,
+					"To have payments and accounts apis": true
+				}
+			],
+			"time": "264",
+			"totalRequestTime": "264",
+			"iterationResults": {}
+		},
+		{
+			"name": "AS discovery",
+			"id": "bd5f0f5d-79f2-4a43-b2ad-ec2bf5365ab5",
+			"url": "https://as.aspsp.k8s-ob.forgerock.financial/oauth2/.well-known/openid-configuration",
+			"totalTime": 0,
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"tests": {
+				"name": "response must be valid and have a json body",
+				"status": "pass",
+				"To have basic discovery data": true
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a json body": {
+					"pass": 1,
+					"fail": 0
+				},
+				"To have basic discovery data": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				"354"
+			],
+			"allTests": [
+				{
+					"response must be valid and have a json body": true,
+					"To have basic discovery data": true
+				}
+			],
+			"time": "354",
+			"totalRequestTime": "354",
+			"iterationResults": {}
+		}
+	],
+	"totalPass": 248,
+	"totalFail": 0,
+	"totalTime": 48304,
+	"lifecycle": "done",
+	"requests": [
+		{
+			"name": "RS discovery",
+			"id": "020511b0-cd1e-4de4-a61d-741e958839b1",
+			"url": "https://rs.aspsp.k8s-ob.forgerock.financial/open-banking/discovery",
+			"time": "2018-11-23T14:41:26.793Z",
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a json body": {
+					"pass": 1,
+					"fail": 0
+				},
+				"To have payments and accounts apis": {
+					"pass": 1,
+					"fail": 0
+				}
+			}
+		},
+		{
+			"name": "AS discovery",
+			"id": "bd5f0f5d-79f2-4a43-b2ad-ec2bf5365ab5",
+			"url": "https://as.aspsp.k8s-ob.forgerock.financial/oauth2/.well-known/openid-configuration",
+			"time": "2018-11-23T14:41:26.793Z",
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a json body": {
+					"pass": 1,
+					"fail": 0
+				},
+				"To have basic discovery data": {
+					"pass": 1,
+					"fail": 0
+				}
+			}
+		},
+		{
+			"name": "JWKMS test MATLS",
+			"id": "3f58e441-287e-44a0-bc86-51dd80451f76",
+			"url": "https://jwkms.k8s-ob.forgerock.financial/mtls/test",
+			"time": "2018-11-23T14:41:26.793Z",
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"testPassFailCounts": {
+				"response must be valid and have a json body": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Test authentication via MATLS": {
+					"pass": 1,
+					"fail": 0
+				}
+			}
+		}
+	],
+	"synced": false
+}
