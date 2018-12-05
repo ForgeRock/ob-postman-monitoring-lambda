@@ -30,6 +30,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 
@@ -39,19 +40,16 @@ public class MonitoringService {
 
     public String sendMonitoringResult(OBMonitoringTestsResult monitoringTestsResult, Context context) {
 
-        String monitoringUri = System.getenv("monitoringUri");
-        String applicationId = System.getenv("applicationId");
-        String applicationSecret = System.getenv("applicationSecret");
-        String institutionId = System.getenv("institutionId");
+        LambdaConfiguration config = LambdaConfiguration.getInstance();
 
-        context.getLogger().log("Call '" + monitoringUri + "/api/requests' with app uid='" + applicationId + "'");
+        context.getLogger().log("Call '" + config.getMonitoringUri() + "/api/requests' with app uid='" + config.getApplicationId() + "'");
         try {
-            URL url = new URL( monitoringUri + "/api/requests");
+            URL url = new URL( config.getMonitoringUri() + "/api/requests");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestProperty("Content-Type", "application/json");
-            String encoding = Base64.getEncoder().encodeToString((applicationId + ":" + applicationSecret).getBytes());
+            String encoding = Base64.getEncoder().encodeToString((config.getApplicationId() + ":" + config.getApplicationSecret()).getBytes());
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             // Send post request
             conn.setDoOutput(true);
@@ -73,12 +71,12 @@ public class MonitoringService {
 
                 if (400 <= conn.getResponseCode() && conn.getResponseCode() < 500) {
                     slackService.sendNotification(slackService.error(
-                            "Monitoring stats notification to '" + monitoringUri + "' failed due to a bad request '" + conn.getResponseCode() + "'",
+                            "Monitoring stats notification to '" + config.getMonitoringUri() + "' failed due to a bad request '" + conn.getResponseCode() + "'",
                             "Error! The message received by the monitoring service '" + output + "'" ),
                             context);
                 } else if (500 <= conn.getResponseCode() && conn.getResponseCode() < 600) {
                     slackService.sendNotification(slackService.warning(
-                            "Monitoring stats notification to '" + monitoringUri + "' failed due to a server error on the monitoring side: '" + conn.getResponseCode() + "'",
+                            "Monitoring stats notification to '" + config.getMonitoringUri() + "' failed due to a server error on the monitoring side: '" + conn.getResponseCode() + "'",
                             "Error! The message received by the monitoring service '" + output + "'" ),
                             context);
                 }
@@ -103,8 +101,8 @@ public class MonitoringService {
             context.getLogger().log("Result from monitoring service : " + result.toString());
             conn.disconnect();
             slackService.sendNotification(slackService.success(
-                    "Monitoring stats send successfully to '" + monitoringUri + "'",
-                    "Success! You can see the result here: " + monitoringUri + "/#!institution/" + institutionId ), context);
+                    "Monitoring stats send successfully to '" + config.getMonitoringUri() + "'",
+                    "Success! You can see the result here: " + config.getMonitoringUri() + "/#!institution/" + config.getInstitutionId() ), context);
 
             return result.toString();
         } catch (IOException e) {
@@ -118,7 +116,7 @@ public class MonitoringService {
      * @param postmanMonitoringExecResult the postman result output
      * @return the monitoring service input
      */
-    public OBMonitoringTestsResult convertPostmanResult(LambdaConfiguration config, PostmanMonitoringExecutionResult postmanMonitoringExecResult) {
+    public OBMonitoringTestsResult convertPostmanResult(LambdaConfiguration config, PostmanMonitoringExecutionResult postmanMonitoringExecResult, Context context) {
 
         OBMonitoringTestsResult monitoringTestsResult = new OBMonitoringTestsResult();
         monitoringTestsResult.setApplicationUuid(config.getApplicationId());
@@ -130,7 +128,7 @@ public class MonitoringService {
             Request request = new Request();
             request.setMethod(execution.getRequest().getMethod());
             request.setTime(execution.getRequest().getTimestamp());
-            request.setUriTemplate(getUriTemplate(execution));
+            request.setUriTemplate(getUriTemplate(execution, context).toLowerCase());
 
             Response response = new Response();
             response.setCode(execution.getResponse().getCode());
@@ -146,20 +144,28 @@ public class MonitoringService {
         return monitoringTestsResult;
     }
 
-    private String getUriTemplate(Execution execution) {
-        /**
-         * A bit of a hack for getting the uri template. The workaround that seems to work is to use the
-         * postman request name and parse it. The format expected here is that everything followed by a - will be the
-         * uri template.
-         */
-        String name = execution.getItem().getName();
-        if (name != null) {
-            String[] split = name.split("- ");
-            if (split.length > 1) {
-                return split[split.length -1];
+    private String getUriTemplate(Execution execution, Context context) {
+
+        try {
+            URL url = new URL(execution.getRequest().getUrl());
+
+            /**
+             * A bit of a hack for getting the uri template. The workaround that seems to work is to use the
+             * postman request name and parse it. The format expected here is that everything followed by a - will be the
+             * uri template.
+             */
+            String name = execution.getItem().getName();
+            if (name != null) {
+                String[] split = name.split("- ");
+                if (split.length > 1) {
+                    return url.getHost() + split[split.length -1];
+                }
             }
+            return url.getHost() + url.getPath();
+        } catch (MalformedURLException e) {
+            context.getLogger().log("Couldn't parse url '" + execution.getRequest().getUrl() + "'");
+            throw new RuntimeException(e);
         }
-        return execution.getRequest().getUrl();
     }
 
     private String getType(Integer code) {

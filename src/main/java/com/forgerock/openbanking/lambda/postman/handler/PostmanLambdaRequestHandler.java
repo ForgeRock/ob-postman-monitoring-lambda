@@ -54,7 +54,7 @@ public class PostmanLambdaRequestHandler implements RequestStreamHandler {
         PostmanMonitoringExecutionResult postmanMonitoringExecResult = postmanService.getPostmanMonitoringResult(config, context);
         context.getLogger().log("We received the following response from postman. postmanMonitoringExecResult: " + postmanMonitoringExecResult);
 
-        OBMonitoringTestsResult monitoringTestsResult = monitoringService.convertPostmanResult(config, postmanMonitoringExecResult);
+        OBMonitoringTestsResult monitoringTestsResult = monitoringService.convertPostmanResult(config, postmanMonitoringExecResult, context);
         context.getLogger().log("We converted the result into the monitoring format : monitoringTestsResult=" + objectMapper.writeValueAsString(monitoringTestsResult));
 
         monitoringService.sendMonitoringResult(monitoringTestsResult, context);

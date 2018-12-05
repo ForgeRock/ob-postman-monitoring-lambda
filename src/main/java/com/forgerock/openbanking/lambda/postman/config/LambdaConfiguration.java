@@ -32,7 +32,8 @@ public class LambdaConfiguration {
     private final String institutionId;
     private final String originRegion;
     private final String slackWebHook;
-
+    private final String monitoringUri;
+    private final String applicationSecret;
 
     public LambdaConfiguration() {
         this.monitoringId = System.getenv("monitoringId");
@@ -40,6 +41,8 @@ public class LambdaConfiguration {
         this.institutionId = System.getenv("institutionId");
         this.originRegion = System.getenv("originRegion");
         this.slackWebHook = System.getenv("slackWebHook");
+        this.monitoringUri = System.getenv("monitoringUri");
+        this.applicationSecret = System.getenv("applicationSecret");
     }
 
     /**
@@ -80,5 +83,21 @@ public class LambdaConfiguration {
      */
     public String getSlackWebHook() {
         return slackWebHook;
+    }
+
+    /**
+     * Get Monitoring service URI
+     * @return monitoring URI
+     */
+    public String getMonitoringUri() {
+        return monitoringUri;
+    }
+
+    /**
+     * Get the application secret
+     * @return the application secret
+     */
+    public String getApplicationSecret() {
+        return applicationSecret;
     }
 }
