@@ -64,20 +64,23 @@ public class MonitoringService {
                 BufferedReader br = new BufferedReader(new InputStreamReader(
                         (conn.getErrorStream())));
                 String output;
+                StringBuilder result = new StringBuilder();
+
                 context.getLogger().log("Error from Server .... \n");
                 while ((output = br.readLine()) != null) {
                     context.getLogger().log(output);
+                    result.append(output);
                 }
 
                 if (400 <= conn.getResponseCode() && conn.getResponseCode() < 500) {
                     slackService.sendNotification(slackService.error(
                             "Monitoring stats notification to '" + config.getMonitoringUri() + "' failed due to a bad request '" + conn.getResponseCode() + "'",
-                            "Error! The message received by the monitoring service '" + output + "'" ),
+                            "Error! The message received by the monitoring service '" + result + "'" ),
                             context);
                 } else if (500 <= conn.getResponseCode() && conn.getResponseCode() < 600) {
                     slackService.sendNotification(slackService.warning(
                             "Monitoring stats notification to '" + config.getMonitoringUri() + "' failed due to a server error on the monitoring side: '" + conn.getResponseCode() + "'",
-                            "Error! The message received by the monitoring service '" + output + "'" ),
+                            "Error! The message received by the monitoring service '" + result + "'" ),
                             context);
                 }
 
@@ -125,6 +128,7 @@ public class MonitoringService {
         monitoringTestsResult.setOriginRegion(config.getOriginRegion());
 
         for(Execution execution: postmanMonitoringExecResult.getRun().getExecutions()) {
+            context.getLogger().log("Convert execution='" + execution + "'");
             Request request = new Request();
             request.setMethod(execution.getRequest().getMethod());
             request.setTime(execution.getRequest().getTimestamp());
@@ -135,7 +139,10 @@ public class MonitoringService {
             response.setDetails(execution.getItem().getName());
             response.setSize(execution.getResponse().getResponseSize());
             response.setType(getType(execution.getResponse().getCode()));
-            Double timeInSec = execution.getResponse().getResponseTime() / 1000.0;
+            Double timeInSec = 0.0;
+            if (execution.getResponse().getResponseTime() != null) {
+                timeInSec = execution.getResponse().getResponseTime() / 1000.0;
+            }
             response.setDuration("PT" + timeInSec + "S");
             request.setResponse(response);
             monitoringTestsResult.addRequest(request);
@@ -169,7 +176,7 @@ public class MonitoringService {
     }
 
     private String getType(Integer code) {
-        if (200 <= code && code < 300 ) {
+        if (code != null && 200 <= code && code < 300 ) {
             return "SUCCESS";
         }
         return "ERROR";

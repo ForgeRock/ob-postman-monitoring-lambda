@@ -56,25 +56,27 @@ public class PostmanService {
                 BufferedReader br = new BufferedReader(new InputStreamReader(
                         (conn.getErrorStream())));
                 String output;
+                StringBuilder result = new StringBuilder();
                 context.getLogger().log("Error from Server .... \n");
                 while ((output = br.readLine()) != null) {
                     context.getLogger().log(output);
+                    result.append(output);
                 }
 
                 if (400 <= conn.getResponseCode() && conn.getResponseCode() < 500) {
                     slackService.sendNotification(slackService.error(
                             "Executing the collection '" + config.getMonitoringId() + "' test suits failed, due to a bad request '" + conn.getResponseCode() + "'",
-                            "Error! The message received by postman service '" + output + "'" ),
+                            "Error! The message received by postman service '" + result + "'" ),
                             context);
                 } else if (500 <= conn.getResponseCode() && conn.getResponseCode() < 600) {
                     slackService.sendNotification(slackService.warning(
                             "Executing the collection '" + config.getMonitoringId() + "' test suits failed, due to an error on postman side '" + conn.getResponseCode() + "'",
-                            "Error! The message received by postman service '" + output + "'" ),
+                            "Error! The message received by postman service '" + result + "'" ),
                             context);
                 }
                 slackService.sendNotification(slackService.error(
                         "Executing the collection '" + config.getMonitoringId() + "' test suits failed with an unexpected error code '" + conn.getResponseCode() + "'",
-                        "Error! The message received by postman service '" + output + "'" ),
+                        "Error! The message received by postman service '" + result + "'" ),
                         context);
 
                 conn.disconnect();
